@@ -4,78 +4,72 @@ namespace CoDevelopers\Elastic\Component;
 
 class View
 {
-    private static $viewPath = null;
-    private static $cachePath = null;
-    private static $twig = null;
+    private $viewPath;
+    private $cachePath;
+    private $twig;
 
-    private static function initViewPath()
+    public function __construct(array $viewPath, string $cachePath, array $functions = [])
     {
-        if (is_null(self::$viewPath)) {
-            self::$viewPath = [
-                rtrim(get_stylesheet_directory(), '/') . '/views',
-                rtrim(get_stylesheet_directory(), '/') . '/templates'
-            ];
-        }
+        $this->viewPath = $viewPath;
+        $this->cachePath = $cachePath;
+        $loader = new \Twig_Loader_Filesystem($this->viewPath);
+        $this->twig = new \Twig_Environment($loader, [
+            'debug' => WP_DEBUG,
+            'cache' => $this->cachePath,
+        ]);
+        $this->extendTwig($functions);
     }
 
-    private static function initCachePath()
+    private function extendTwig(array $functions = [])
     {
-        if (is_null(self::$cachePath)) {
-            self::$cachePath = rtrim(get_stylesheet_directory(), '/') . '/twig_cache';
-        }
+        $this->addFaker();
+        $this->addAsset();
+        $this->addDump();
+        $this->addFn();
+        $this->addWc();
+        $this->addGetField();
     }
 
-    private static function initTwig()
+    public function render(string $template, array $vars = []): string
     {
-        if (is_null(self::$twig)) {
-            self::initViewPath();
-            self::initCachePath();
-            $loader = new \Twig_Loader_Filesystem(self::$viewPath);
-            self::$twig = new \Twig_Environment($loader, [
-                'debug' => WP_DEBUG,
-                'cache' => self::$cachePath,
-            ]);
-            self::addFaker();
-            self::addAsset();
-            self::addDump();
-            self::addFn();
-            self::addWc();
-            self::addGetField();
+        if (count($this->$viewPath) !== 2) {
+            return '';
         }
-    }
-
-    public static function render(string $template, array $vars = []): string
-    {
-        self::initViewPath();
+        if (!file_exists($this->$viewPath[0] . '/' . $template) && !file_exists($this->$viewPath[1] . '/' . $template)) {
+            return '';
+        }
+        ob_start();
         if (is_array($vars)) {
             extract($vars);
         }
-        ob_start();
-        include self::$viewPath . '/' . $template;
+        if (file_exists($this->$viewPath[0] . '/' . $template)) {
+            include $this->$viewPath[0] . '/' . $template;
+        } else {
+            include $this->$viewPath[1] . '/' . $template;
+        }
         return ob_get_clean();
     }
 
-    public static function renderTwig(string $template, array $vars = []): string
+    public function renderTwig(string $template, array $vars = []): string
     {
-        self::initTwig();
-        return self::$twig->render($template, $vars);
+        return $this->twig->render($template, $vars);
     }
 
-    private static function addFaker()
+    private function addFaker()
     {
         if (class_exists('CoDevelopers\\Elastic\\Component\\Faker')) {
             self::$twig->addGlobal('faker', CoDevelopers\Elastic\Component\Faker::get());
         }
     }
 
-    private static function addAsset()
+    private function addAsset()
     {
         if (class_exists('CoDevelopers\\Elastic\\Component\\Asset')) {
             self::$twig->addFunction(new \Twig_Function('asset', [CoDevelopers\Elastic\Component\Asset::class, 'get']));
         }
     }
 
-    private static function addDump()
+    private function addDump()
     {
         if (function_exists('dump')) {
             self::$twig->addFunction(new \Twig_Function('dump', function ($var, ...$moreVars) {
@@ -84,7 +78,7 @@ class View
         }
     }
 
-    private static function addFn()
+    private function addFn()
     {
         self::$twig->addFunction(new \Twig_Function('fn', function (string $function, ...$args) {
             $fn = trim($function);
@@ -92,14 +86,14 @@ class View
         }));
     }
 
-    private static function addWc()
+    private function addWc()
     {
         if (function_exists('WC')) {
             self::$twig->addGlobal('WC', WC());
         }
     }
 
-    private static function addGetField()
+    private function addGetField()
     {
         if (function_exists('get_field')) {
             self::$twig->addFunction(new \Twig_Function('get_field', function (string $selector, $post_id = false, bool $format_value = true) {

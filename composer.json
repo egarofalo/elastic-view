@@ -1,0 +1,27 @@
+{
+    "name": "co-developers/elastic-view",
+    "type": "library",
+    "license": "MIT",
+    "description": "Elastic View Component",
+    "homepage": "http://co-developers.com",
+    "authors": [
+        {
+            "name": "Edgardo Garofalo",
+            "email": "egarofalo83@gmail.com",
+            "homepage": "https://github.com/egarofalo",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "wordpress", "co-developers", "starter theme", "wordpress starter theme", "twig"
+    ],
+    "require": {
+        "php": "^7.0",
+        "twig/twig": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "CoDevelopers\\Elastic\\Component\\": ""
+        }
+    }
+}

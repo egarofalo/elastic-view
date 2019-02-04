@@ -28,6 +28,9 @@ class View
         $this->addFn();
         $this->addWc();
         $this->addGetField();
+        foreach ($functions as $funcName => $func) {
+            $this->twig->addFunction(new \Twig_Function($funcName, $func));
+        }
     }
 
     public function render(string $template, array $vars = []): string

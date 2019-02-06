@@ -61,21 +61,21 @@ class View
     private function addFaker()
     {
         if (class_exists('CoDevelopers\\Elastic\\Component\\Faker')) {
-            self::$twig->addGlobal('faker', CoDevelopers\Elastic\Component\Faker::get());
+            $this->twig->addGlobal('faker', CoDevelopers\Elastic\Component\Faker::get());
         }
     }
 
     private function addAsset()
     {
         if (class_exists('CoDevelopers\\Elastic\\Component\\Asset')) {
-            self::$twig->addFunction(new \Twig_Function('asset', [CoDevelopers\Elastic\Component\Asset::class, 'get']));
+            $this->twig->addFunction(new \Twig_Function('asset', [CoDevelopers\Elastic\Component\Asset::class, 'get']));
         }
     }
 
     private function addDump()
     {
         if (function_exists('dump')) {
-            self::$twig->addFunction(new \Twig_Function('dump', function ($var, ...$moreVars) {
+            $this->twig->addFunction(new \Twig_Function('dump', function ($var, ...$moreVars) {
                 dump($var, ...$moreVars);
             }));
         }
@@ -83,7 +83,7 @@ class View
 
     private function addFn()
     {
-        self::$twig->addFunction(new \Twig_Function('fn', function (string $function, ...$args) {
+        $this->twig->addFunction(new \Twig_Function('fn', function (string $function, ...$args) {
             $fn = trim($function);
             return call_user_func_array($fn, $args);
         }));
@@ -92,14 +92,14 @@ class View
     private function addWc()
     {
         if (function_exists('WC')) {
-            self::$twig->addGlobal('WC', WC());
+            $this->twig->addGlobal('WC', WC());
         }
     }
 
     private function addGetField()
     {
         if (function_exists('get_field')) {
-            self::$twig->addFunction(new \Twig_Function('get_field', function (string $selector, $post_id = false, bool $format_value = true) {
+            $this->twig->addFunction(new \Twig_Function('get_field', function (string $selector, $post_id = false, bool $format_value = true) {
                 return get_field($selector, $post_id, $format_value);
             }, ['is_safe' => ['html']]));
         }

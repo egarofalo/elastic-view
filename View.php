@@ -33,12 +33,8 @@ class View
 
     private function extendTwig(array $functions = [], array $globals = [])
     {
-        $this->addFaker();
-        $this->addAsset();
         $this->addDump();
         $this->addFn();
-        $this->addWc();
-        $this->addGetField();
         foreach ($functions as $funcName => $func) {
             $this->twig->addFunction(new \Twig_Function($funcName, $func));
         }
@@ -72,20 +68,6 @@ class View
         return $this->twig->render($this->chooseTemplate($templates), $vars);
     }
 
-    private function addFaker()
-    {
-        if (class_exists('CoDevelopers\\Elastic\\Component\\Faker')) {
-            $this->twig->addGlobal('faker', CoDevelopers\Elastic\Component\Faker::get());
-        }
-    }
-
-    private function addAsset()
-    {
-        if (class_exists('CoDevelopers\\Elastic\\Component\\Asset')) {
-            $this->twig->addFunction(new \Twig_Function('asset', [CoDevelopers\Elastic\Component\Asset::class, 'get']));
-        }
-    }
-
     private function addDump()
     {
         if (function_exists('dump')) {
@@ -101,21 +83,5 @@ class View
             $fn = trim($function);
             return call_user_func_array($fn, $args);
         }));
-    }
-
-    private function addWc()
-    {
-        if (function_exists('WC')) {
-            $this->twig->addGlobal('WC', WC());
-        }
-    }
-
-    private function addGetField()
-    {
-        if (function_exists('get_field')) {
-            $this->twig->addFunction(new \Twig_Function('get_field', function (string $selector, $post_id = false, bool $format_value = true) {
-                return get_field($selector, $post_id, $format_value);
-            }, ['is_safe' => ['html']]));
-        }
     }
 }

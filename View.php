@@ -41,6 +41,7 @@ class View
         foreach ($globals as $key => $value) {
             $this->twig->addGlobal($key, $value);
         }
+        $this->twig = apply_filters('get_twig', $this->twig);
     }
 
     public function render(string $template, array $vars = []): string

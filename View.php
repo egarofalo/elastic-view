@@ -46,20 +46,20 @@ class View
 
     public function render(string $template, array $vars = []): string
     {
-        if (count($this->$viewPath) !== 2) {
+        if (count($this->viewPath) !== 2) {
             return '';
         }
-        if (!file_exists($this->$viewPath[0] . '/' . $template) && !file_exists($this->$viewPath[1] . '/' . $template)) {
+        if (!file_exists($this->viewPath[0] . '/' . $template) && !file_exists($this->viewPath[1] . '/' . $template)) {
             return '';
         }
         ob_start();
         if (is_array($vars)) {
             extract($vars);
         }
-        if (file_exists($this->$viewPath[0] . '/' . $template)) {
-            include $this->$viewPath[0] . '/' . $template;
+        if (file_exists($this->viewPath[0] . '/' . $template)) {
+            include $this->viewPath[0] . '/' . $template;
         } else {
-            include $this->$viewPath[1] . '/' . $template;
+            include $this->viewPath[1] . '/' . $template;
         }
         return ob_get_clean();
     }

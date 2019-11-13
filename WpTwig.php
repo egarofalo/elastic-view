@@ -1,15 +1,26 @@
 <?php
 
-namespace CoDevelopers\Elastic\Component;
+namespace CoDevelopers\WpTwig;
 
-class View
+use CoDevelopers\WpTwig\Extension\AdvancedCustomField;
+use CoDevelopers\WpTwig\Extension\GeneralTemplate;
+use CoDevelopers\WpTwig\Extension\GeneralTemplateTag;
+use CoDevelopers\WpTwig\Extension\PostTemplate;
+use Twig\TwigFunction;
+
+class WpTwig
 {
+    use GeneralTemplateTag,
+        GeneralTemplate,
+        PostTemplate,
+        AdvancedCustomField;
+
     private $viewPath;
     private $cachePath;
     private $loader;
     private $twig;
 
-    public function __construct(array $viewPath, string $cachePath, array $functions = [], array $globals = [])
+    public function __construct(array $viewPath, string $cachePath)
     {
         $this->viewPath = $viewPath;
         $this->cachePath = $cachePath;
@@ -18,7 +29,7 @@ class View
             'debug' => WP_DEBUG,
             'cache' => $this->cachePath,
         ]);
-        $this->extendTwig($functions, $globals);
+        $this->extendTwig();
     }
 
     private function chooseTemplate(array $templates)
@@ -28,19 +39,17 @@ class View
                 return $template;
             }
         }
+
         return false;
     }
 
-    private function extendTwig(array $functions = [], array $globals = [])
+    private function extendTwig()
     {
-        $this->addDump();
         $this->addFn();
-        foreach ($functions as $funcName => $func) {
-            $this->twig->addFunction(new \Twig_Function($funcName, $func));
-        }
-        foreach ($globals as $key => $value) {
-            $this->twig->addGlobal($key, $value);
-        }
+        $this->addGeneralTemplateTags();
+        $this->addGeneralTemplate();
+        $this->addPostTemplate();
+        $this->addAdvancedCustomField();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 
@@ -49,18 +58,23 @@ class View
         if (count($this->viewPath) !== 2) {
             return '';
         }
+
         if (!file_exists($this->viewPath[0] . '/' . $template) && !file_exists($this->viewPath[1] . '/' . $template)) {
             return '';
         }
+
         ob_start();
+
         if (is_array($vars)) {
             extract($vars);
         }
+
         if (file_exists($this->viewPath[0] . '/' . $template)) {
             include $this->viewPath[0] . '/' . $template;
         } else {
             include $this->viewPath[1] . '/' . $template;
         }
+
         return ob_get_clean();
     }
 
@@ -69,18 +83,9 @@ class View
         return $this->twig->render($this->chooseTemplate($templates), $vars);
     }
 
-    private function addDump()
-    {
-        if (function_exists('dump')) {
-            $this->twig->addFunction(new \Twig_Function('dump', function ($var, ...$moreVars) {
-                dump($var, ...$moreVars);
-            }));
-        }
-    }
-
     private function addFn()
     {
-        $this->twig->addFunction(new \Twig_Function('fn', function (string $function, ...$args) {
+        $this->twig->addFunction(new TwigFunction('fn', function (string $function, ...$args) {
             $fn = trim($function);
             return call_user_func_array($fn, $args);
         }));

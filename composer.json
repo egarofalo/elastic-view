@@ -1,8 +1,8 @@
 {
-    "name": "co-developers/elastic-view",
+    "name": "co-developers/wp-twig",
     "type": "library",
     "license": "MIT",
-    "description": "Elastic View Component",
+    "description": "Twig for WordPress",
     "homepage": "http://co-developers.com",
     "authors": [
         {
@@ -13,7 +13,9 @@
         }
     ],
     "keywords": [
-        "wordpress", "co-developers", "starter theme", "wordpress starter theme", "twig"
+        "wordpress",
+        "co-developers",
+        "twig"
     ],
     "require": {
         "php": "^7.0",
@@ -21,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CoDevelopers\\Elastic\\Component\\": ""
+            "CoDevelopers\\WpTwig\\": ""
         }
     }
 }

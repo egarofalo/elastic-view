@@ -10,7 +10,10 @@ trait GeneralTemplate
     {
         $this->site();
         $this->wpHead();
+        $this->wpFooter();
         $this->getSearchForm();
+        $this->getSidebar();
+        $this->paginateLinks();
     }
 
     public function site()
@@ -28,6 +31,18 @@ trait GeneralTemplate
             $this->twig->addFunction(new TwigFunction('wp_head', function () {
                 ob_start();
                 $head = wp_head();
+                ob_get_clean();
+                return $head;
+            }, ['is_safe' => ['html']]));
+        }
+    }
+
+    public function wpFooter()
+    {
+        if (function_exists('wp_footer')) {
+            $this->twig->addFunction(new TwigFunction('wp_footer', function () {
+                ob_start();
+                $head = wp_footer();
                 ob_get_clean();
                 return $head;
             }, ['is_safe' => ['html']]));
@@ -53,6 +68,15 @@ trait GeneralTemplate
                 $sidebar = ob_get_contents();
                 ob_get_clean();
                 return $sidebar;
+            }, ['is_safe' => ['html']]));
+        }
+    }
+
+    public function paginateLinks()
+    {
+        if (function_exists('paginate_links')) {
+            $this->twig->addFunction(new TwigFunction('paginate_links', function ($args = '') {
+                return paginate_links($args);
             }, ['is_safe' => ['html']]));
         }
     }

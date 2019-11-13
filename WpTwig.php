@@ -2,9 +2,11 @@
 
 namespace CoDevelopers\WpTwig;
 
-use CoDevelopers\WpTwig\Extension\AdvancedCustomField;
 use CoDevelopers\WpTwig\Extension\GeneralTemplate;
 use CoDevelopers\WpTwig\Extension\GeneralTemplateTag;
+use CoDevelopers\WpTwig\Extension\I10n;
+use CoDevelopers\WpTwig\Extension\LinkTemplate;
+use CoDevelopers\WpTwig\Extension\Media;
 use CoDevelopers\WpTwig\Extension\PostTemplate;
 use Twig\TwigFunction;
 
@@ -13,7 +15,9 @@ class WpTwig
     use GeneralTemplateTag,
         GeneralTemplate,
         PostTemplate,
-        AdvancedCustomField;
+        I10n,
+        LinkTemplate,
+        Media;
 
     private $viewPath;
     private $cachePath;
@@ -49,7 +53,9 @@ class WpTwig
         $this->addGeneralTemplateTags();
         $this->addGeneralTemplate();
         $this->addPostTemplate();
-        $this->addAdvancedCustomField();
+        $this->addI10n();
+        $this->addLinkTemplate();
+        $this->addMedia();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 

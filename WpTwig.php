@@ -2,6 +2,7 @@
 
 namespace CoDevelopers\WpTwig;
 
+use CoDevelopers\WpTwig\Extension\Functions;
 use CoDevelopers\WpTwig\Extension\GeneralTemplate;
 use CoDevelopers\WpTwig\Extension\GeneralTemplateTag;
 use CoDevelopers\WpTwig\Extension\I10n;
@@ -23,7 +24,8 @@ class WpTwig
         Media,
         PostThumbnailTemplate,
         Option,
-        Plugin;
+        Plugin,
+        Functions;
 
     private $viewPath;
     private $cachePath;
@@ -65,6 +67,7 @@ class WpTwig
         $this->addPostThumbnailTemplate();
         $this->addOption();
         $this->addPlugin();
+        $this->addFunctions();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 

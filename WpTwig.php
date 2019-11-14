@@ -7,6 +7,7 @@ use CoDevelopers\WpTwig\Extension\GeneralTemplateTag;
 use CoDevelopers\WpTwig\Extension\I10n;
 use CoDevelopers\WpTwig\Extension\LinkTemplate;
 use CoDevelopers\WpTwig\Extension\Media;
+use CoDevelopers\WpTwig\Extension\Option;
 use CoDevelopers\WpTwig\Extension\PostTemplate;
 use CoDevelopers\WpTwig\Extension\PostThumbnailTemplate;
 use Twig\TwigFunction;
@@ -19,7 +20,8 @@ class WpTwig
         I10n,
         LinkTemplate,
         Media,
-        PostThumbnailTemplate;
+        PostThumbnailTemplate,
+        Option;
 
     private $viewPath;
     private $cachePath;
@@ -59,6 +61,7 @@ class WpTwig
         $this->addLinkTemplate();
         $this->addMedia();
         $this->addPostThumbnailTemplate();
+        $this->addOption();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 

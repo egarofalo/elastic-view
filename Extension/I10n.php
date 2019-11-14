@@ -10,6 +10,7 @@ trait I10n
     {
         $this->translate();
         $this->translateWithGetTextContext();
+        $this->translatePlural();
     }
 
     public function translate()
@@ -26,6 +27,15 @@ trait I10n
         if (function_exists('_x')) {
             $this->twig->addFunction(new TwigFunction('_x', function (string $text, string $context, string $domain = 'default') {
                 return _x($text, $context, $domain);
+            }, ['is_safe' => ['html']]));
+        }
+    }
+
+    public function translatePlural()
+    {
+        if (function_exists('_n')) {
+            $this->twig->addFunction(new TwigFunction('_n', function (string $single, string $plural, int $number, string $domain = 'default') {
+                return _n($single, $plural, $number, $domain);
             }, ['is_safe' => ['html']]));
         }
     }

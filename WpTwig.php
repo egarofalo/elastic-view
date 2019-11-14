@@ -12,6 +12,7 @@ use CoDevelopers\WpTwig\Extension\Option;
 use CoDevelopers\WpTwig\Extension\Plugin;
 use CoDevelopers\WpTwig\Extension\PostTemplate;
 use CoDevelopers\WpTwig\Extension\PostThumbnailTemplate;
+use CoDevelopers\WpTwig\Extension\Query;
 use Twig\TwigFunction;
 
 class WpTwig
@@ -25,7 +26,8 @@ class WpTwig
         PostThumbnailTemplate,
         Option,
         Plugin,
-        Functions;
+        Functions,
+        Query;
 
     private $viewPath;
     private $cachePath;
@@ -68,6 +70,7 @@ class WpTwig
         $this->addOption();
         $this->addPlugin();
         $this->addFunctions();
+        $this->addQuery();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 

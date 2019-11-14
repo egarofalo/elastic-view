@@ -2,7 +2,7 @@
     "name": "co-developers/wp-twig",
     "type": "library",
     "license": "MIT",
-    "description": "Twig for WordPress",
+    "description": "Twig implementation for WordPress.",
     "homepage": "http://co-developers.com",
     "authors": [
         {

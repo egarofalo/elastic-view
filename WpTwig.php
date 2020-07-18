@@ -13,7 +13,9 @@ use CoDevelopers\WpTwig\Extension\Plugin;
 use CoDevelopers\WpTwig\Extension\PostTemplate;
 use CoDevelopers\WpTwig\Extension\PostThumbnailTemplate;
 use CoDevelopers\WpTwig\Extension\Query;
+use InvalidArgumentException;
 use Twig\TwigFunction;
+use TypeError;
 
 class WpTwig
 {
@@ -99,9 +101,22 @@ class WpTwig
         return ob_get_clean();
     }
 
-    public function renderTwig(array $templates, array $vars = []): string
+    public function renderTwig($templates, array $vars = []): string
     {
-        return $this->twig->render($this->chooseTemplate($templates), $vars);
+        try {
+            if (!is_array($templates) and !is_string($templates)) {
+                throw new InvalidArgumentException('renderTwig method must have a $templates argument type of array or string, ' . gettype($templates) . ' given.');
+            }
+
+            if (is_string($templates)) {
+                $templates = [$templates];
+            }
+
+            return $this->twig->render($this->chooseTemplate($templates), $vars);
+        } catch (InvalidArgumentException $e) {
+            echo $e->getMessage();
+            die;
+        }
     }
 
     private function addFn()

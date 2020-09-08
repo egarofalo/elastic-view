@@ -13,9 +13,9 @@ use CoDevelopers\WpTwig\Extension\Plugin;
 use CoDevelopers\WpTwig\Extension\PostTemplate;
 use CoDevelopers\WpTwig\Extension\PostThumbnailTemplate;
 use CoDevelopers\WpTwig\Extension\Query;
+use CoDevelopers\WpTwig\Extension\Shortcodes;
 use InvalidArgumentException;
 use Twig\TwigFunction;
-use TypeError;
 
 class WpTwig
 {
@@ -29,7 +29,8 @@ class WpTwig
         Option,
         Plugin,
         Functions,
-        Query;
+        Query,
+        Shortcodes;
 
     private $viewPath;
     private $cachePath;
@@ -73,6 +74,7 @@ class WpTwig
         $this->addPlugin();
         $this->addFunctions();
         $this->addQuery();
+        $this->addShortcodes();
         $this->twig = apply_filters('get_twig', $this->twig);
     }
 
